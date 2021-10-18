@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom'
+import MainHeader from './components/MainHeader'
+import Team from './components/Team';
 
 function App() {
+  const location = useLocation()
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Switch location={location} key={location.pathname}>
+        <Route exact path="/">
+          <MainHeader />
+          <p>Dashboard</p>
+          <button onClick={() => {
+            navigator.serviceWorker.controller!.postMessage({
+              data: "Hi there, this is a test!",
+              type: "TEST"
+            })
+          }} className="p-3 text-white bg-blue-500 flex-1">
+            Trigger notification
+          </button>
+        </Route>
+        <Route exact path="/team">
+          <MainHeader />
+          <div className="container mx-auto my-10">
+            <Team />
+          </div>
+        </Route>
+        <Route exact path="/projects">
+          <MainHeader />
+          <p>Projects</p>
+        </Route>
+        <Route exact path="/calendar">
+          <MainHeader />
+          <p>Calendar</p>
+        </Route>
+      </Switch>
+    </>
   );
 }
 
-export default App;
+
+const AppWrapper = () => {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}
+
+export default AppWrapper;
